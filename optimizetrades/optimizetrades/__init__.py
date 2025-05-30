@@ -1,7 +1,4 @@
-"""Top-level package for optimizetrades.
-
-Exposes commonly-used functions directly at the package level for convenience.
-"""
+"""optimizetrades top-level."""
 
 __all__ = [
     "version",

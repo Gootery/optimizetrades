@@ -1,4 +1,4 @@
-"""Streamlit front-end for the optimisation demo."""
+"""Streamlit UI for the demo."""
 from __future__ import annotations
 
 import datetime as dt
@@ -13,11 +13,11 @@ from optimizetrades.optimization.qp_markowitz import optimize_markowitz
 
 st.set_page_config(page_title="OptimizeTrades", layout="wide")
 
-st.title("📈 Portfolio Optimisation Demo")
+st.title("📈 Portfolio Optimiser")
 
-# ------------------ Sidebar Inputs ------------------
+# ---- sidebar ----
 with st.sidebar:
-    st.header("Universe & Period")
+    st.header("Universe / Period")
     tickers: List[str] = st.multiselect(
         "Tickers", ["AAPL", "MSFT", "GOOG", "NVDA", "AMZN", "META"], default=["AAPL", "MSFT", "GOOG"]
     )
@@ -30,7 +30,7 @@ with st.sidebar:
 
     run_button = st.button("Run Optimisation")
 
-# ------------------ Main Panel ------------------
+# ---- main ----
 if run_button and tickers:
     with st.spinner("Fetching data & optimising..."):
         prices = get_price_data(tickers, start, end)[(slice(None), "Adj Close")]
@@ -41,10 +41,10 @@ if run_button and tickers:
         cov = returns.cov()
         result = optimize_markowitz(mu, cov, risk_aversion=risk_aversion)
 
-    st.subheader("Optimal Weights")
+    st.subheader("Weights")
     st.table(result.weights.sort_values(ascending=False).to_frame("Weight"))
 
-    st.subheader("Portfolio Metrics")
+    st.subheader("Metrics")
     st.metric("Expected Return", f"{result.expected_return:.2%}")
     st.metric("Volatility", f"{result.volatility:.2%}")
 
@@ -54,4 +54,4 @@ if run_button and tickers:
     st.plotly_chart(fig_prices, use_container_width=True)
 
 else:
-    st.info("Select tickers and click *Run Optimisation* to begin.") 
+    st.info("Pick tickers then hit run.") 

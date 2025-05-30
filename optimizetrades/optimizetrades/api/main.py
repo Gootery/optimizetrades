@@ -34,14 +34,14 @@ class OptimResponse(BaseModel):
 # ------------------
 @app.post("/optimize", response_model=OptimResponse)
 async def optimize_portfolio(req: OptimRequest):
-    # 1. Get price data and compute simple returns
+    # pull prices
     price_df = get_price_data(req.tickers, req.start, req.end, auto_adjust=False)
 
-    # Prefer adjusted close if present; otherwise fall back to raw close.
+    # use Adj Close if we have it
     level_names = price_df.columns.get_level_values(1)
     field = "Adj Close" if "Adj Close" in level_names else "Close"
 
-    # Select all tickers for the chosen field using a MultiIndex slice
+    # grab that column for every ticker
     idx = pd.IndexSlice
     prices = price_df.loc[:, idx[:, field]]
     prices.columns = prices.columns.droplevel(1)  # drop price field level

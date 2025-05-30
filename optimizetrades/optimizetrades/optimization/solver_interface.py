@@ -1,11 +1,10 @@
-"""Solver interface wraps cvxpy Problem.solve with sensible defaults."""
+"""Thin wrapper around ``problem.solve`` with nicer defaults."""
 from __future__ import annotations
 
 from typing import Any, Dict, Optional
 
 import cvxpy as cp
 
-# Preference order – if a solver isn't installed we'll fall through to the next.
 _SOLVERS: Dict[str, str] = {
     "ECOS": cp.ECOS,
     "OSQP": cp.OSQP,
@@ -28,19 +27,18 @@ def solve_problem(problem: cp.Problem, solver: str | None = None, **kwargs) -> D
     dict
         status, objective value, solver_stats.
     """
-    # Determine the solver to use.
+    # pick solver (use request if given)
     if solver is not None:
-        # Respect explicit request and let cvxpy raise if unavailable.
         chosen_solver = _SOLVERS.get(solver.upper(), solver)
     else:
-        # Pick the first solver in _SOLVERS that is actually installed.
+        # otherwise take first installed one
         installed = set(cp.installed_solvers())
         for name, const in _SOLVERS.items():
             if const in installed:
                 chosen_solver = const
                 break
         else:
-            # Fallback to whatever default cvxpy thinks is best.
+            # nothing found – let cvxpy decide
             chosen_solver = None  # type: ignore[assignment]
 
     result = problem.solve(solver=chosen_solver, **kwargs)

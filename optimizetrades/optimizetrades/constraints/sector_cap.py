@@ -1,4 +1,4 @@
-"""Sector concentration cap constraint."""
+"""Sector cap constraint."""
 from __future__ import annotations
 
 from typing import Dict
@@ -10,14 +10,10 @@ from optimizetrades.constraints.base import Constraint
 
 
 class SectorCap(Constraint):
-    """Cap total weight allocated to each sector.
+    """Cap total weight per sector.
 
-    Parameters
-    ----------
-    sector_map : dict[str, str]
-        Mapping of *ticker* → *sector* label.
-    max_sector_weight : float, default 0.25
-        Maximum proportion of portfolio allowed in any single sector.
+    ``sector_map`` : ticker → sector
+    ``max_sector_weight`` : limit per sector (default 25%).
     """
 
     def __init__(self, sector_map: Dict[str, str], max_sector_weight: float = 0.25):
@@ -28,7 +24,7 @@ class SectorCap(Constraint):
         tickers = list(self.sector_map.keys())
         sectors = list(set(self.sector_map.values()))
 
-        # Build sector exposure matrix S_{s,i} = 1 if asset i in sector s
+        # build sector exposure matrix S_{s,i}
         S = np.zeros((len(sectors), len(tickers)))
         for i, tkr in enumerate(tickers):
             s = sectors.index(self.sector_map[tkr])

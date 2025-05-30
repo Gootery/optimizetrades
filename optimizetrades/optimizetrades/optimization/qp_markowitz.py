@@ -1,4 +1,4 @@
-"""Mean–variance optimisation via quadratic programming (Markowitz)."""
+"""Mean–variance optimiser (Markowitz)."""
 from __future__ import annotations
 
 from typing import List, Sequence
@@ -19,7 +19,12 @@ def optimize_markowitz(
     constraints: Sequence[Constraint] | None = None,
     solver: str | None = None,
 ) -> OptimResult:
-    """Compute the tangency portfolio that maximises µᵀw − λ wᵀΣw.
+    """Maximise µᵀw − λ wᵀΣw.
+
+    * ``mu`` / ``cov`` are expected returns & cov matrix
+    * ``risk_aversion`` = λ (bigger ⇒ safer port)
+    * always enforces sum w = 1
+    Returns an ``OptimResult``.
 
     Parameters
     ----------
@@ -44,13 +49,13 @@ def optimize_markowitz(
     # Decision variable
     w = cp.Variable(n)
 
-    # Objective: maximise expected utility → minimise negative (cvxpy minimises)
+    # objective: maximise util
     obj = cp.Maximize(mu.values @ w - risk_aversion * cp.quad_form(w, cov.values))
 
-    # Base constraints (fully invested)
+    # fully invested
     constr = [cp.sum(w) == 1]
 
-    # Apply user constraints
+    # extra user constraints
     for c in constraints or []:
         constr += list(c.cvxpy_constr(w))
 

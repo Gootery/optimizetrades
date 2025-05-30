@@ -1,4 +1,4 @@
-"""Dataclasses holding optimisation results for convenient downstream use."""
+"""Small dataclasses for optimisation results."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -10,7 +10,7 @@ import pandas as pd
 
 @dataclass
 class OptimResult:
-    """Container for single optimisation run."""
+    """Single optimise run."""
 
     weights: pd.Series  # index tickers, values weights
     expected_return: float
@@ -28,7 +28,7 @@ class OptimResult:
 
 @dataclass
 class FrontierResult:
-    """Efficient frontier set of portfolios."""
+    """Efficient frontier."""
 
     returns: np.ndarray
     vols: np.ndarray
