@@ -1,0 +1,25 @@
+[project]
+name = "optimizetrades"
+version = "0.1.0"
+description = "Portfolio Optimisation Toolkit"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[project.dependencies]
+numpy = "*"
+pandas = "*"
+scipy = "*"
+cvxpy = "*"
+yfinance = "*"
+plotly = "*"
+streamlit = "*"
+fastapi = "*"
+uvicorn = {extras = ["standard"], version="*"}
+pydantic = "*"
+statsmodels = "*"
+scikit-learn = "*"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta" 
